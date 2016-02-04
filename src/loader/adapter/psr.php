@@ -18,7 +18,7 @@ class psr implements loaderInterface
 			if($prepend) {
 				array_unshift(static::$_includeDir, $dir);
 			} else {
-				static::$_includeDir[] = $dir;
+				array_push(static::$_includeDir, $dir);
 			}
 
 			return true;
@@ -29,7 +29,7 @@ class psr implements loaderInterface
 
 	public function load(string $class):bool
 	{
-		$file = DIRECTORY_SEPARATOR.strtr($class, '\\', DIRECTORY_SEPARATOR).'.php';
+		$file = DIRECTORY_SEPARATOR.strtr($class, array('\\'=>DIRECTORY_SEPARATOR, '_'=>DIRECTORY_SEPARATOR)).'.php';
 
 		foreach(static::$_includeDir as $dir) {
 			if(is_file($dir.$file)) {
