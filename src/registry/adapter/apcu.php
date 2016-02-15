@@ -32,9 +32,9 @@ class apcu implements registry
 		return $this->_cache[$key];
 	}
 
-	public function set(string $key, $value, int $ttl=0):registry
+	public function set(string $key, $value):registry
 	{
-		\apcu_store($this->_prefix.$key, $value, $ttl);
+		\apcu_store($this->_prefix.$key, $value);
 		return $this;
 	}
 
