@@ -5,7 +5,7 @@ use registry\registry;
 class apcu implements registry
 {
 	private $_prefix = '';
-	private $_cache  = array();
+	private $_cache  = [];
 
 	public function __construct($prefix=null)
 	{
@@ -70,7 +70,7 @@ class apcu implements registry
 
 	public function flush():registry
 	{
-		$this->_cache = array();
+		$this->_cache = [];
 
 		$iterator = class_exists('\APCUIterator') ? new \APCUIterator() : new \APCIterator('user');
 		foreach($iterator as $key=>$value) {
