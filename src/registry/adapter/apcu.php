@@ -49,6 +49,11 @@ class apcu implements registry
 		return \apcu_exists($this->_prefix.$key); 
 	}
 
+	public function __isset(string $key):bool
+	{
+		return $this->exists($key); 
+	}
+
 	public function delete(string $key):bool
 	{
 		if(isset($this->_cache[$key])) {
@@ -56,6 +61,11 @@ class apcu implements registry
 		}
 
 		return \apcu_delete($this->_prefix.$key);
+	}
+
+	public function __unset(string $key):bool
+	{
+		return $this->delete($key);
 	}
 
 	public function flush():registry
