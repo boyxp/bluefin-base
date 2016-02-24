@@ -13,5 +13,8 @@ interface locator
 	public function alias(string $alias, string $service):bool;
 
 	public function has(string $service):bool;
+	public function __isset(string $service):bool;
+
 	public function remove(string $service):bool;
+	public function __unset(string $service):bool;
 }
