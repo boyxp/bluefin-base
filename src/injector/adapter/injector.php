@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 namespace injector\adapter;
-use injector\injector;
 use locator\locator;
-class statics implements injector
+use injector\injector as injectorInterface;
+class injector implements injectorInterface
 {
 	protected static $_locator;
 
