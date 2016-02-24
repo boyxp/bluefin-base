@@ -1,8 +1,11 @@
 <?php
 declare(strict_types=1);
 namespace locator\adapter;
-use locator\locator;
-class container implements locator
+use closure;
+use ReflectionClass;
+use locator\exception;
+use locator\locator as locatorInterface;
+class locator implements locatorInterface
 {
 	private $_instances = [];
 	private $_closures  = [];
@@ -10,17 +13,20 @@ class container implements locator
 
 	public function get(string $service)
 	{
-		if(isset($this->_closures[$service])) {
+		if(isset($this->_instances[$service])) {
+
+		} elseif(isset($this->_closures[$service])) {
 			$closure = $this->_closures[$service];
 			$this->_instances[$service] = $closure();
-			return $this->_instances[$service];
 
-		} elseif(isset($this->_instances[$service])) {
-			return $this->_instances[$service];
+		} elseif($this->has($service)) {
+			$this->_instances[$service] = $this->make($service);
 
 		} else {
 			throw new exception('error');
 		}
+
+		return $this->_instances[$service];
 	}
 
 	public function __get(string $service)
@@ -56,15 +62,19 @@ class container implements locator
 
 		$class = str_replace('_', '\\adapter\\', $service);
 		if(class_exists($class)) {
-			$reflection = new ReflectionClass($class);
-			$instance   = $reflection->newInstanceArgs($args);
+			if(is_null($args)) {
+				$instance   = new $class;
+			} else {
+				$reflection = new ReflectionClass($class);
+				$instance   = new $reflection->newInstanceArgs($args);
+			}
 			return $instance;
 		} else {
 			throw new exception('error');
 		}
 	}
 
-	public function bind(string $service, array $args):\closure
+	public function bind(string $service, array $args):closure
 	{
 		return function() use($service,$args) {
 			return static::make($service, $args);
@@ -79,7 +89,17 @@ class container implements locator
 
 	public function has(string $service):bool
 	{
-		return isset($this->_closures[$service]) or isset($this->_instances[$service]);
+		if(isset($this->_instances[$service])) {
+			return true;
+		} elseif(isset($this->_closures[$service])) {
+			return true;
+		} elseif(strpos($service, '_')===false and interface_exists($service.'\\'.$service)) {
+			return true;
+		} elseif(strpos($service, '_')!==false and class_exists(str_replace('_', '\\adapter\\', $service))) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public function __isset(string $service):bool
@@ -89,7 +109,7 @@ class container implements locator
 
 	public function remove(string $service):bool
 	{
-		unset($this->_closures[$service], $this->_instances[$service]);
+		unset($this->_closures[$service], $this->_instances[$service], $this->_aliases[$service]);
 		return true;
 	}
 
