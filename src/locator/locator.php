@@ -9,7 +9,7 @@ interface locator
 	public function __set(string $service, $instance):bool;
 
 	public function make(string $service, array $args=null);
-	public function bind(string $service, array $args):closure;
+	public function bind(string $service, array $args):\closure;
 	public function alias(string $alias, string $service):bool;
 
 	public function has(string $service):bool;

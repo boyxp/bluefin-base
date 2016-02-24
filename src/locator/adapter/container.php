@@ -64,7 +64,7 @@ class container implements locator
 		}
 	}
 
-	public function bind(string $service, array $args):closure
+	public function bind(string $service, array $args):\closure
 	{
 		return function() use($service,$args) {
 			return static::make($service, $args);
