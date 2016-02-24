@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 namespace loader\adapter;
-use loader\loader;
-class psr implements loader
+use loader\loader as loaderInterface;
+class loader implements loaderInterface
 {
 	private static $_registered = false;
 	private static $_includeDir = array();
