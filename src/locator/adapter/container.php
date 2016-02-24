@@ -19,7 +19,7 @@ class container implements locator
 			return $this->_instances[$service];
 
 		} else {
-			return null;
+			throw new exception('error');
 		}
 	}
 
@@ -55,7 +55,13 @@ class container implements locator
 		}
 
 		$class = str_replace('_', '\\adapter\\', $service);
-		//if(class_exists($class)) {}
+		if(class_exists($class)) {
+			$reflection = new ReflectionClass($class);
+			$instance   = $reflection->newInstanceArgs($args);
+			return $instance;
+		} else {
+			throw new exception('error');
+		}
 	}
 
 	public function bind(string $service, array $args):closure
@@ -67,13 +73,28 @@ class container implements locator
 
 	public function alias(string $alias, string $service):bool
 	{
+		$this->_aliases[$alias] = $service;
+		return true;
 	}
 
 	public function has(string $service):bool
 	{
+		return isset($this->_closures[$service]) or isset($this->_instances[$service]);
+	}
+
+	public function __isset(string $service):bool
+	{
+		return $this->has($service);
 	}
 
 	public function remove(string $service):bool
 	{
+		unset($this->_closures[$service], $this->_instances[$service]);
+		return true;
+	}
+
+	public function __unset(string $service):bool
+	{
+		return $this->remove($service);
 	}
 }
