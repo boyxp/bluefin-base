@@ -13,6 +13,8 @@ class locator implements locatorInterface
 
 	public function get(string $service)
 	{
+		$service = isset($this->_aliases[$service]) ? $this->_aliases[$service] : $service;
+
 		if(isset($this->_instances[$service])) {
 
 		} elseif(isset($this->_closures[$service])) {
@@ -66,7 +68,7 @@ class locator implements locatorInterface
 				$instance   = new $class;
 			} else {
 				$reflection = new ReflectionClass($class);
-				$instance   = new $reflection->newInstanceArgs($args);
+				$instance   = $reflection->newInstanceArgs($args);
 			}
 			return $instance;
 		} else {
@@ -83,20 +85,32 @@ class locator implements locatorInterface
 
 	public function alias(string $alias, string $service):bool
 	{
-		$this->_aliases[$alias] = $service;
-		return true;
+		if($this->has($service)) {
+			$this->_aliases[$alias] = $service;
+			return true;
+
+		} else {
+			return false;
+		}
 	}
 
 	public function has(string $service):bool
 	{
 		if(isset($this->_instances[$service])) {
 			return true;
+
 		} elseif(isset($this->_closures[$service])) {
 			return true;
+
+		} elseif(isset($this->_aliases[$service])) {
+			return true;
+
 		} elseif(strpos($service, '_')===false and interface_exists($service.'\\'.$service)) {
 			return true;
+
 		} elseif(strpos($service, '_')!==false and class_exists(str_replace('_', '\\adapter\\', $service))) {
 			return true;
+
 		} else {
 			return false;
 		}
