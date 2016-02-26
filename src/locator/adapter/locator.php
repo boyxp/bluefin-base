@@ -10,10 +10,13 @@ class locator implements locatorInterface
 	private $_instances = [];
 	private $_closures  = [];
 	private $_aliases   = [];
+	private $_bindings  = [];
 
 	public function get(string $service)
 	{
-		$service = isset($this->_aliases[$service]) ? $this->_aliases[$service] : $service;
+		if(isset($this->_aliases[$service])) {
+			$service = $this->_aliases[$service];
+		}
 
 		if(isset($this->_instances[$service])) {
 
@@ -65,12 +68,14 @@ class locator implements locatorInterface
 		$class = str_replace('_', '\\adapter\\', $service);
 		if(class_exists($class)) {
 			if(is_null($args)) {
-				$instance   = new $class;
-			} else {
-				$reflection = new ReflectionClass($class);
-				$instance   = $reflection->newInstanceArgs($args);
+				if(!isset($this->_bindings[$service])) {
+					return new $class;
+				} else {
+					$args = $this->_bindings[$service];
+				}
 			}
-			return $instance;
+
+			return (new ReflectionClass($class))->newInstanceArgs($args);
 		} else {
 			throw new exception('error');
 		}
@@ -78,6 +83,8 @@ class locator implements locatorInterface
 
 	public function bind(string $service, array $args):closure
 	{
+		$this->_bindings[$service] = $args;
+
 		return function() use($service,$args) {
 			return static::make($service, $args);
 		};
@@ -85,10 +92,9 @@ class locator implements locatorInterface
 
 	public function alias(string $alias, string $service):bool
 	{
-		if($this->has($service)) {
+		if(!isset($this->_aliases[$alias]) and $this->has($service)) {
 			$this->_aliases[$alias] = $service;
 			return true;
-
 		} else {
 			return false;
 		}
