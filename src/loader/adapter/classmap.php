@@ -35,9 +35,8 @@ class classmap implements loaderInterface
 	public function register(bool $prepend=false):bool
 	{
 		if(!$this->_registered) {
-			spl_autoload_register([$this, 'load'], true, $prepend);
-			$this->_registered = true;
-			return true;
+			$this->_registered = spl_autoload_register([$this, 'load'], true, $prepend);
+			return $this->_registered;
 		} else {
 			return false;
 		}
