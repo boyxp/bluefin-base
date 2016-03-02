@@ -86,7 +86,7 @@ class locator implements locatorInterface
 		$this->_bindings[$service] = $args;
 
 		return function() use($service,$args) {
-			return static::make($service, $args);
+			return $this->make($service, $args);
 		};
 	}
 
