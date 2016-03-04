@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
-namespace injector\adapter;
-use locator\locator;
-use injector\injector as injectorInterface;
+namespace bluefin\component\injector\adapter;
+use bluefin\component\locator\locator;
+use bluefin\component\injector\injector as injectorInterface;
 class injector implements injectorInterface
 {
 	protected static $_locator;

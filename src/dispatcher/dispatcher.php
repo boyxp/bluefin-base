@@ -1,5 +1,5 @@
 <?php
-namespace dispatcher;
+namespace bluefin\component\dispatcher;
 interface dispatcher
 {
 	public function dispatch($handle, array $params=[]):bool;

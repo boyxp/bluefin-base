@@ -1,5 +1,5 @@
 <?php
-namespace registry;
+namespace bluefin\component\registry;
 interface registry
 {
 	public function get(string $key);

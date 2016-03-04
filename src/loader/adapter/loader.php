@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
-namespace loader\adapter;
-use loader\loader as loaderInterface;
+namespace bluefin\component\loader\adapter;
+use bluefin\component\loader\loader as loaderInterface;
 class loader implements loaderInterface
 {
 	private $_paths      = [];

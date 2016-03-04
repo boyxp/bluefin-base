@@ -1,5 +1,5 @@
 <?php
-namespace router;
+namespace bluefin\component\router;
 interface router
 {
 	public function add(string $pattern, $handle):router;

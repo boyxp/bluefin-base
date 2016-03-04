@@ -1,5 +1,5 @@
 <?php
-namespace queue;
+namespace bluefin\component\queue;
 interface queue
 {
 	public function enqueue($message):bool;

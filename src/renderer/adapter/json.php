@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
-namespace renderer\adapter;
-use renderer\renderer as rendererInterface;
+namespace bluefin\component\renderer\adapter;
+use bluefin\component\renderer\renderer as rendererInterface;
 class json implements rendererInterface
 {
 	private $_charset = null;

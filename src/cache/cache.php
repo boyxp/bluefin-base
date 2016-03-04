@@ -1,5 +1,5 @@
 <?php
-namespace cache;
+namespace bluefin\component\cache;
 interface cache
 {
 	public function get(string $key);

@@ -1,5 +1,5 @@
 <?php
-namespace session;
+namespace bluefin\component\session;
 interface session extends \SessionHandlerInterface
 {
 	public function start():bool;

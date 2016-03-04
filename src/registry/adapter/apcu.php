@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
-namespace registry\adapter;
-use registry\registry;
+namespace bluefin\component\registry\adapter;
+use bluefin\component\registry\registry;
 class apcu implements registry
 {
 	private $_prefix = '';
