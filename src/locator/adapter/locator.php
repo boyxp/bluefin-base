@@ -1,16 +1,22 @@
 <?php
 declare(strict_types=1);
-namespace locator\adapter;
+namespace bluefin\component\locator\adapter;
 use closure;
 use ReflectionClass;
-use locator\exception;
-use locator\locator as locatorInterface;
+use bluefin\component\locator\exception;
+use bluefin\component\locator\locator as locatorInterface;
 class locator implements locatorInterface
 {
 	private $_instances = [];
 	private $_closures  = [];
 	private $_aliases   = [];
 	private $_bindings  = [];
+	private $_namespace = '';
+
+	public function __construct($namespace='')
+	{
+		$this->_namespace = $namespace;
+	}
 
 	public function get(string $service)
 	{
@@ -65,7 +71,7 @@ class locator implements locatorInterface
 			$service .= '_'.$service;
 		}
 
-		$class = str_replace('_', '\\adapter\\', $service);
+		$class = $this->_namespace.str_replace('_', '\\adapter\\', $service);
 		if(class_exists($class)) {
 			if(is_null($args)) {
 				if(!isset($this->_bindings[$service])) {
@@ -111,10 +117,10 @@ class locator implements locatorInterface
 		} elseif(isset($this->_aliases[$service])) {
 			return true;
 
-		} elseif(strpos($service, '_')===false and interface_exists($service.'\\'.$service)) {
+		} elseif(strpos($service, '_')===false and interface_exists($this->_namespace.$service.'\\'.$service)) {
 			return true;
 
-		} elseif(strpos($service, '_')!==false and class_exists(str_replace('_', '\\adapter\\', $service))) {
+		} elseif(strpos($service, '_')!==false and class_exists($this->_namespace.str_replace('_', '\\adapter\\', $service))) {
 			return true;
 
 		} else {
