@@ -4,34 +4,34 @@ namespace loader\adapter;
 use loader\loader as loaderInterface;
 class loader implements loaderInterface
 {
-	private static $_registered = false;
-	private static $_includeDir = array();
+	private $_paths      = [];
+	private $_registered = false;
 
-	public function __construct()
+	public function __construct(array $paths=[])
 	{
-		static::$_includeDir = explode(PATH_SEPARATOR, get_include_path());
+		$paths = array_merge($paths, explode(PATH_SEPARATOR, get_include_path()));
+		foreach($paths as $path) {
+			if(is_dir($path)) {
+				$this->_paths[] = $path;
+			}
+		}
 	}
 
-	public function add(string $dir, bool $prepend=false):bool
+	public function add(string $dir):bool
 	{
-		if(in_array($dir, static::$_includeDir)===false) {
-			if($prepend) {
-				array_unshift(static::$_includeDir, $dir);
-			} else {
-				array_push(static::$_includeDir, $dir);
-			}
-
+		if(!in_array($dir, $this->_paths) and is_dir($dir)) {
+			$this->_paths[] = $dir;
 			return true;
+		} else {
+			return false;
 		}
-
-		return false;
 	}
 
 	public function load(string $class):bool
 	{
-		$file = DIRECTORY_SEPARATOR.strtr($class, array('\\'=>DIRECTORY_SEPARATOR, '_'=>DIRECTORY_SEPARATOR)).'.php';
+		$file = DIRECTORY_SEPARATOR.strtr($class, ['\\'=>DIRECTORY_SEPARATOR, '_'=>DIRECTORY_SEPARATOR]).'.php';
 
-		foreach(static::$_includeDir as $dir) {
+		foreach($this->_paths as $dir) {
 			if(is_file($dir.$file)) {
 				include($dir.$file);
 				return true;
@@ -43,22 +43,20 @@ class loader implements loaderInterface
 
 	public function register(bool $prepend=false):bool
 	{
-		if(!static::$_registered) {
-			spl_autoload_register(array($this, 'load'), true, $prepend);
-			static::$_registered = true;
-
-			return true;
+		if(!$this->_registered) {
+			$this->_registered = spl_autoload_register([$this, 'load'], true, $prepend);
+			return $this->_registered;
+		} else {
+			return false;
 		}
-
-		return false;
 	}
 
 	public function unregister():bool
 	{
-		if(static::$_registered===false) {
+		if($this->_registered===false) {
 			return false;
+		} else {
+			return spl_autoload_unregister([$this, 'load']);
 		}
-
-		return spl_autoload_unregister(array($this, 'load'));
 	}
 }
