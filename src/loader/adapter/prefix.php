@@ -13,12 +13,14 @@ class prefix implements loaderInterface
 			return false;
 		}
 
+		$prefix = rtrim($prefix, '\\');
+
 		if(!isset($this->_prefixDirs[$prefix{0}][$prefix])) {
-			$this->_prefixDirs[$prefix{0}][$prefix][$dir] = strlen($prefix)+1;
+			$this->_prefixDirs[$prefix{0}][$prefix][$dir] = strlen($prefix);
 			return true;
 
 		} elseif(!in_array($dir, $this->_prefixDirs[$prefix{0}][$prefix])) {
-			$this->_prefixDirs[$prefix{0}][$prefix][$dir] = strlen($prefix)+1;
+			$this->_prefixDirs[$prefix{0}][$prefix][$dir] = strlen($prefix);
 			return true;
 
 		} else {
