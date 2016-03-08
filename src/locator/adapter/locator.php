@@ -7,15 +7,28 @@ use bluefin\component\locator\exception;
 use bluefin\component\locator\locator as locatorInterface;
 class locator implements locatorInterface
 {
-	private $_instances = [];
-	private $_closures  = [];
-	private $_aliases   = [];
-	private $_bindings  = [];
-	private $_namespace = '';
+	private $_instances  = [];
+	private $_closures   = [];
+	private $_aliases    = [];
+	private $_bindings   = [];
+	private $_namespaces = [];
+	private $_classmap   = [];
 
-	public function __construct($namespace='')
+	public function __construct(array $namespaces=[])
 	{
-		$this->_namespace = $namespace;
+		$this->_namespaces = $namespaces;
+	}
+
+	public function add(string $namespace):bool
+	{
+		$namespace = rtrim($namespace, '\\');
+
+		if(in_array($namespace, $this->_namespaces)) {
+			return false;
+		} else {
+			$this->_namespaces[] = $namespace;
+			return true;
+		}
 	}
 
 	public function get(string $service)
@@ -67,12 +80,8 @@ class locator implements locatorInterface
 
 	public function make(string $service, array $args=null)
 	{
-		if(strpos($service, '_')===false) {
-			$service .= '_'.$service;
-		}
-
-		$class = $this->_namespace.str_replace('_', '\\adapter\\', $service);
-		if(class_exists($class)) {
+		$class = $this->_lookup($service);
+		if(!is_null($class)) {
 			if(is_null($args)) {
 				if(!isset($this->_bindings[$service])) {
 					return new $class;
@@ -117,10 +126,7 @@ class locator implements locatorInterface
 		} elseif(isset($this->_aliases[$service])) {
 			return true;
 
-		} elseif(strpos($service, '_')===false and interface_exists($this->_namespace.$service.'\\'.$service)) {
-			return true;
-
-		} elseif(strpos($service, '_')!==false and class_exists($this->_namespace.str_replace('_', '\\adapter\\', $service))) {
+		} elseif($this->_lookup($service)) {
 			return true;
 
 		} else {
@@ -142,5 +148,29 @@ class locator implements locatorInterface
 	public function __unset(string $service):bool
 	{
 		return $this->remove($service);
+	}
+
+	private function _lookup(string $service)
+	{
+		if(isset($this->_classmap[$service])) {
+			return $this->_classmap[$service];
+		}
+
+		if(strpos($service, '_')===false) {
+			$component = $service;
+			$adapter   = $service;
+		} else {
+			list($component, $adapter) = explode('_', $service);
+		}
+
+		foreach($this->_namespaces as $namespace) {
+			$class = sprintf($namespace, $component).'\\'.$adapter;
+			if(class_exists($class)) {
+				$this->_classmap[$service] = $class;
+				return $class;
+			}
+		}
+
+		return null;
 	}
 }
