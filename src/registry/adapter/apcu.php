@@ -32,13 +32,13 @@ class apcu implements registryInterface
 		return $this->_cache[$key];
 	}
 
-	public function set(string $key, $value):registry
+	public function set(string $key, $value):registryInterface
 	{
 		\apcu_store($this->_prefix.$key, $value);
 		return $this;
 	}
 
-	public function __set(string $key, $value):registry
+	public function __set(string $key, $value):registryInterface
 	{
 		$this->_cache[$key] = $value;
 		return $this->set($key, $value);
@@ -68,7 +68,7 @@ class apcu implements registryInterface
 		return $this->delete($key);
 	}
 
-	public function flush():registry
+	public function flush():registryInterface
 	{
 		$this->_cache = [];
 
