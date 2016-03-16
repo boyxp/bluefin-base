@@ -7,7 +7,7 @@ class router implements routerInterface
 {
 	private $_registry = null;
 	private $_handle   = null;
-	private $_matches  = array();
+	private $_matches  = [];
 
 	public function __construct(registry $registry)
 	{
@@ -25,11 +25,11 @@ class router implements routerInterface
 			$key   = "MATCH:{$nodes[0]}";
 			unset($nodes[0]);
 
-			$tree  = $this->_registry->exists($key) ? $this->_registry->get($key) : array();
+			$tree  = $this->_registry->exists($key) ? $this->_registry->get($key) : [];
 			$curr  = &$tree;
 			foreach($nodes as $node) {
 				if(!isset($curr[$node])) {
-					$curr[$node] = array();
+					$curr[$node] = [];
 				}
 
 				$curr = &$curr[$node];
@@ -55,6 +55,9 @@ class router implements routerInterface
 
 	public function route(string $subject):bool
 	{
+		$this->_handle  = null;
+		$this->_matches = [];
+
 		if($handle=$this->_registry->get("STATIC:{$subject}")) {
 			$this->_handle = $handle;
 			return true;
@@ -63,7 +66,7 @@ class router implements routerInterface
 			$rules = $this->_registry->get("MATCH:{$nodes[0]}");
 			if($rules) {
 				$last    = &$rules;
-				$matches = array();
+				$matches = [];
 				for($i=1,$count=count($nodes),$end=$count-1;$i<$count;$i++) {
 					if(isset($last[$nodes[$i]])) {
 						$last = &$last[$nodes[$i]];
