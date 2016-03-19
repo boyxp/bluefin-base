@@ -53,7 +53,7 @@ class redis implements cacheInterface
 		return $this->exists($key);
 	}
 
-	public function delete(string $key):bool
+	public function remove(string $key):bool
 	{
 		$this->_redis->del($this->_prefix.$key);
 		return $this;
