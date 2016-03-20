@@ -34,7 +34,10 @@ class locator implements locatorInterface
 	public function get(string $service)
 	{
 		if(isset($this->_aliases[$service])) {
+			$args    = isset($this->_bindings[$service]) ? $this->_bindings[$service] : null;
 			$service = $this->_aliases[$service];
+		} else {
+			$args = null;
 		}
 
 		if(isset($this->_instances[$service])) {
@@ -44,7 +47,7 @@ class locator implements locatorInterface
 			$this->_instances[$service] = $closure();
 
 		} elseif($this->has($service)) {
-			$this->_instances[$service] = $this->make($service);
+			$this->_instances[$service] = $this->make($service, $args);
 
 		} else {
 			throw new exception('error');
