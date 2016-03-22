@@ -54,7 +54,7 @@ class apcu implements registryInterface
 		return $this->exists($key); 
 	}
 
-	public function delete(string $key):bool
+	public function remove(string $key):bool
 	{
 		if(isset($this->_cache[$key])) {
 			unset($this->_cache[$key]);
