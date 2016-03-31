@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 namespace bluefin\component\router\adapter;
-use bluefin\component\router\router as routerInterface;
 use bluefin\component\registry\registry;
+use bluefin\component\router\router as routerInterface;
 class router implements routerInterface
 {
 	private $_registry = null;
