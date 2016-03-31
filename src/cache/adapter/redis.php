@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 namespace bluefin\component\cache\adapter;
-use bluefin\component\cache\cache as cacheInterface;
 use bluefin\orm\connection\adapter\redis;
+use bluefin\component\cache\cache as cacheInterface;
 class redis implements cacheInterface
 {
 	private $_redis  = null;
