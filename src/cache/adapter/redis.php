@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 namespace bluefin\component\cache\adapter;
-use bluefin\orm\connection\adapter\redis;
+use bluefin\orm\connection\adapter\redis as connection;
 use bluefin\component\cache\cache as cacheInterface;
 class redis implements cacheInterface
 {
@@ -30,12 +30,12 @@ class redis implements cacheInterface
 
 	public function set(string $key, $value, int $ttl=0):bool
 	{
-		$this->_redis->set($this->_prefix.$key, $value);
+		$result = $this->_redis->set($this->_prefix.$key, $value);
 		if($ttl>0) {
 			$this->expire($this->_prefix.$key, $ttl);
 		}
 
-		return $this;
+		return $result==='OK';
 	}
 
 	public function __set(string $key, $value):bool
@@ -45,7 +45,8 @@ class redis implements cacheInterface
 
 	public function exists(string $key):bool
 	{
-		return $this->_redis->exists($this->_prefix.$key);
+		$result = $this->_redis->exists($this->_prefix.$key);
+		return $result===1;
 	}
 
 	public function __isset(string $key):bool
@@ -55,8 +56,8 @@ class redis implements cacheInterface
 
 	public function remove(string $key):bool
 	{
-		$this->_redis->del($this->_prefix.$key);
-		return $this;
+		$result = $this->_redis->del($this->_prefix.$key);
+		return $result===1;
 	}
 
 	public function __unset(string $key):bool
@@ -66,8 +67,8 @@ class redis implements cacheInterface
 
 	public function expire(string $key, int $ttl=60):bool
 	{
-		$this->_redis->expire($this->_prefix.$key, intval($ttl));
-		return $this;
+		$result = $this->_redis->expire($this->_prefix.$key, intval($ttl));
+		return $result===1;
 	}
 
 	public function ttl(string $key):int
