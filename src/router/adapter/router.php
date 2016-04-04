@@ -70,7 +70,7 @@ class router implements routerInterface
 				for($i=1,$count=count($nodes),$end=$count-1;$i<$count;$i++) {
 					if(isset($last[$nodes[$i]])) {
 						$last = &$last[$nodes[$i]];
-					} elseif(isset($last['*']) and ctype_alnum($nodes[$i])) {
+					} elseif(isset($last['*']) and ctype_alnum(strtr($nodes[$i], array(':'=>'', '_'=>'')))) {
 						$matches[] = $nodes[$i];
 						$last      = &$last['*'];
 					} else {
