@@ -62,15 +62,16 @@ class router implements routerInterface
 			$this->_handle = $handle;
 			return true;
 		} else {
-			$nodes = explode('/', ltrim($subject, '/'));
-			$rules = $this->_registry->get("MATCH:{$nodes[0]}");
+			$subject = strtr($subject, array(':'=>'', '_'=>''));
+			$nodes   = explode('/', ltrim($subject, '/'));
+			$rules   = $this->_registry->get("MATCH:{$nodes[0]}");
 			if($rules) {
 				$last    = &$rules;
 				$matches = [];
 				for($i=1,$count=count($nodes),$end=$count-1;$i<$count;$i++) {
 					if(isset($last[$nodes[$i]])) {
 						$last = &$last[$nodes[$i]];
-					} elseif(isset($last['*']) and ctype_alnum(strtr($nodes[$i], array(':'=>'', '_'=>'')))) {
+					} elseif(isset($last['*']) and ctype_alnum($nodes[$i])) {
 						$matches[] = $nodes[$i];
 						$last      = &$last['*'];
 					} else {
