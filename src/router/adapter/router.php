@@ -22,9 +22,7 @@ class router implements routerInterface
 			$this->_registry->set("STATIC:{$pattern}", $handle);
 		} else {
 			$nodes = explode('/', ltrim($pattern, '/'));
-			$key   = "MATCH:{$nodes[0]}";
-			unset($nodes[0]);
-
+			$key   = 'MATCH:'.next($nodes).':'.count($nodes);
 			$tree  = $this->_registry->exists($key) ? $this->_registry->get($key) : [];
 			$curr  = &$tree;
 			foreach($nodes as $node) {
@@ -62,16 +60,21 @@ class router implements routerInterface
 			$this->_handle = $handle;
 			return true;
 		} else {
-			$subject = strtr($subject, array(':'=>'', '_'=>''));
-			$nodes   = explode('/', ltrim($subject, '/'));
-			$rules   = $this->_registry->get("MATCH:{$nodes[0]}");
+			$nodes = explode('/', ltrim($subject, '/'));
+			$key   = 'MATCH:'.next($nodes).':'.count($nodes);
+			$rules = $this->_registry->get($key);
+			if(!$rules) {
+				$key   = 'MATCH:*:'.count($nodes);
+				$rules = $this->_registry->get($key);
+			}
+
 			if($rules) {
 				$last    = &$rules;
 				$matches = [];
-				for($i=1,$count=count($nodes),$end=$count-1;$i<$count;$i++) {
+				for($i=0,$count=count($nodes),$end=$count-1;$i<$count;$i++) {
 					if(isset($last[$nodes[$i]])) {
 						$last = &$last[$nodes[$i]];
-					} elseif(isset($last['*']) and ctype_alnum($nodes[$i])) {
+					} elseif(isset($last['*']) and ctype_alnum(strtr($nodes[$i], array(':'=>'', '_'=>'')))) {
 						$matches[] = $nodes[$i];
 						$last      = &$last['*'];
 					} else {
