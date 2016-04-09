@@ -144,7 +144,7 @@ class locator implements locatorInterface
 
 	public function remove(string $service):bool
 	{
-		unset($this->_closures[$service], $this->_instances[$service], $this->_aliases[$service]);
+		unset($this->_closures[$service], $this->_instances[$service], $this->_aliases[$service], $this->_bindings[$service]);
 		return true;
 	}
 
