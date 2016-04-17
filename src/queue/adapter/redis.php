@@ -18,17 +18,16 @@ class redis implements queueInterface
 		}
 	}
 
-	public function enqueue($message):bool
+	public function enqueue(string $message):bool
 	{
-		$message = json_encode($message);
 		$this->_redis->lpush($this->_key, $message);
 		return true;
 	}
 
-	public function dequeue()
+	public function dequeue():string
 	{
 		$result = $this->_redis->rpop($this->_key);
-		return is_null($result) ? null : json_decode($result, true);
+		return is_null($result) ? '' : $result;
 	}
 
 	public function purge():bool
