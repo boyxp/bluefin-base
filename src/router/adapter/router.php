@@ -72,7 +72,7 @@ class router implements routerInterface
 			if($rules) {
 				$last    = &$rules;
 				$matches = [];
-				for($i=0,$count=count($nodes),$end=$count-1;$i<$count;$i++) {
+				for($i=0,$count=count($nodes);$i<$count;$i++) {
 					if(isset($last[$nodes[$i]])) {
 						$last = &$last[$nodes[$i]];
 					} elseif(isset($last['*']) and ctype_alnum(strtr($nodes[$i], array(':'=>'', '_'=>'')))) {
@@ -81,12 +81,12 @@ class router implements routerInterface
 					} else {
 						return false;
 					}
+				}
 
-					if($i===$end and isset($last['#handle'])) {
-						$this->_handle = $last['#handle'];
-						$this->_matches= $matches;
-						return true;
-					}
+				if(isset($last['#handle'])) {
+					$this->_handle = $last['#handle'];
+					$this->_matches= $matches;
+					return true;
 				}
 			}
 		}
