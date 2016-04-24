@@ -17,7 +17,6 @@ class router implements routerInterface
 	public function add(string $pattern, $handle):routerInterface
 	{
 		$pattern = preg_replace('/\{[a-z0-9]+\}/i', '*', $pattern);
-		$pattern = rtrim($pattern, '/');
 
 		if(strpos($pattern, '*')===false) {
 			$this->_registry->set("STATIC:{$pattern}", $handle);
