@@ -1,5 +1,5 @@
 <?php
-namespace bluefin\component\locator;
+namespace bluefin\base\locator;
 use closure;
 interface locator
 {

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
-namespace bluefin\component\loader\adapter;
-use bluefin\component\loader\loader as loaderInterface;
+namespace bluefin\base\loader\adapter;
+use bluefin\base\loader\loader as loaderInterface;
 class prefix implements loaderInterface
 {
 	private $_registered = false;

@@ -1,5 +1,5 @@
 <?php
-namespace bluefin\component\loader;
+namespace bluefin\base\loader;
 interface loader
 {
 	public function load(string $class):bool;

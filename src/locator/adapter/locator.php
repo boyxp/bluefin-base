@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
-namespace bluefin\component\locator\adapter;
+namespace bluefin\base\locator\adapter;
 use closure;
 use ReflectionClass;
-use bluefin\component\locator\exception;
-use bluefin\component\locator\locator as locatorInterface;
+use bluefin\base\locator\exception;
+use bluefin\base\locator\locator as locatorInterface;
 class locator implements locatorInterface
 {
 	private $_instances  = [];
