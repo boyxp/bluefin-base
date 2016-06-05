@@ -167,7 +167,7 @@ class locator implements locatorInterface
 		}
 
 		foreach($this->_namespaces as $namespace) {
-			$class = sprintf($namespace, $component).'\\'.$adapter;
+			$class = sprintf($namespace, $component, $adapter);
 			if(class_exists($class)) {
 				$this->_classmap[$service] = $class;
 				return $class;
