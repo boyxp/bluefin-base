@@ -5,11 +5,11 @@ use bluefin\base\locator\locator;
 use bluefin\base\injector\injector as injectorInterface;
 class injector implements injectorInterface
 {
-	protected static $_locator;
+	protected static $locator;
 
 	public static function inject(locator $locator):bool
 	{
-		static::$_locator = $locator;
+		static::$locator = $locator;
 		return true;
 	}
 }
