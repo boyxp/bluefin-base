@@ -10,7 +10,7 @@ class shm implements registryInterface
 	public function __construct(string $namespace=null)
 	{
 		if(is_null($namespace)) {
-			$namespace = $_SERVER['HTTP_HOST'];
+			$namespace = isset($_SERVER['PWD']) ? $_SERVER['PWD'] : 'SHM';
 		}
 
 		$this->_shmid = shm_attach(crc32($namespace));
