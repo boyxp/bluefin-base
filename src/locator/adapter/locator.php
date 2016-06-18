@@ -83,6 +83,10 @@ class locator implements locatorInterface
 
 	public function make(string $service, array $args=null)
 	{
+		if(isset($this->_aliases[$service])) {
+			$service = $this->_aliases[$service];
+		}
+
 		$class = $this->_lookup($service);
 		if(!is_null($class)) {
 			if(is_null($args)) {
