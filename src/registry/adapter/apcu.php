@@ -7,14 +7,16 @@ class apcu implements registryInterface
 	private $_prefix = '';
 	private $_cache  = [];
 
-	public function __construct($prefix=null)
+	public function __construct(string $prefix=null)
 	{
-		if(isset($_SERVER['HTTP_HOST'])) {
-			$this->_prefix .= $_SERVER['HTTP_HOST'].':';
-		}
+		if(!is_null($prefix)) {
+			$this->_prefix = $prefix.':';
 
-		if($prefix!==null and is_string($prefix)) {
-			$this->_prefix .= $prefix.':';
+		} elseif(isset($_SERVER['HTTP_HOST'])) {
+			$this->_prefix = "APCU:{$_SERVER['HTTP_HOST']}:";
+
+		} else {
+			$this->_prefix = 'APCU:';
 		}
 	}
 
