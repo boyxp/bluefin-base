@@ -20,7 +20,7 @@ class shm implements registryInterface
 	{
 		$key = crc32($key);
 		if(shm_has_var($this->_shmid, $key)) {
-			return unserialize(shm_get_var($this->_shmid, $key));
+			return shm_get_var($this->_shmid, $key);
 		} else {
 			return null;
 		}
@@ -37,9 +37,7 @@ class shm implements registryInterface
 
 	public function set(string $key, $value):registryInterface
 	{
-		$key   = crc32($key);
-		$value = serialize($value);
-		shm_put_var($this->_shmid, $key, $value);
+		shm_put_var($this->_shmid, crc32($key), $value);
 		return $this;
 	}
 
@@ -51,8 +49,7 @@ class shm implements registryInterface
 
 	public function exists(string $key):bool
 	{
-		$key = crc32($key);
-		return shm_has_var($this->_shmid, $key);
+		return shm_has_var($this->_shmid, crc32($key));
 	}
 
 	public function __isset(string $key):bool
