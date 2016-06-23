@@ -3,7 +3,6 @@ declare(strict_types=1);
 namespace bluefin\base\locator\adapter;
 use closure;
 use ReflectionClass;
-use bluefin\base\locator\exception;
 use bluefin\base\locator\locator as locatorInterface;
 class locator implements locatorInterface
 {
@@ -50,7 +49,7 @@ class locator implements locatorInterface
 			$this->_instances[$service] = $this->make($service, $args);
 
 		} else {
-			throw new exception('error');
+			throw new \InvalidArgumentException('error');
 		}
 
 		return $this->_instances[$service];
@@ -99,7 +98,7 @@ class locator implements locatorInterface
 
 			return (new ReflectionClass($class))->newInstanceArgs($args);
 		} else {
-			throw new exception('error');
+			throw new \InvalidArgumentException('error');
 		}
 	}
 
